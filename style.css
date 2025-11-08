@@ -67,6 +67,10 @@
     text-shadow: none;
 }
 
+html, body {
+  overscroll-behavior: none;
+}
+
 html {
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
