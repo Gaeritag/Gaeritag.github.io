@@ -1,3 +1,32 @@
+document.addEventListener("DOMContentLoaded", () => {
+    const word = "gaeritag";
+    const typingSpeed = 1000;
+    const pauseTime = 200;
+    let i = 0;
+    let direction = 1;
+
+    function updateTitle() {
+        const visible = word.substring(0, i);
+        document.title = "@" + visible;
+
+        if (direction === 1 && i === word.length) {
+            direction = -1;
+            setTimeout(updateTitle, pauseTime);
+            return;
+        }
+        if (direction === -1 && i === 0) {
+            direction = 1;
+            setTimeout(updateTitle, pauseTime);
+            return;
+        }
+
+        i += direction;
+        setTimeout(updateTitle, typingSpeed);
+    }
+
+    updateTitle();
+});
+
 const tracks = [
     {
         name: "Montagem Mysterious Game",

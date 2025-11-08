@@ -7,23 +7,35 @@
         <link rel="preload" href="script.js" as="script" />
         <link
             rel="preload"
-            href="https://assets.guns.lol/fonts/X6XYTKIVDUW7GZTZPZNN4EUM5KH54KHF.woff2"
+            href="./fonts/Satoshi.woff2"
             as="font"
             type="font/woff2"
         />
         <link
             rel="preload"
-            href="https://r2.guns.lol/e6bda08d-dfcf-4ad5-b574-5e771d361eba.mp4"
+            href="./fonts/DrukWide-Bold.woff2"
+            as="font"
+            type="font/woff2"
+        />
+        <link
+            rel="preload"
+            href="./fonts/DrukWide-Medium.woff2"
+            as="font"
+            type="font/woff2"
+        />
+        <link
+            rel="preload"
+            href="./assets/background.mp4"
             as="video"
             type="video/mp4"
         />
         <link
             rel="preload"
-            href="https://api.konect.gg/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBMGJSVmc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--549eb47169e78fe4bbca8384da476ae034923817/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lKZDJWaWNBWTZCa1ZVT2hSeVpYTnBlbVZmZEc5ZmJHbHRhWFJiQjJrQzNBVnBBdlFCIiwiZXhwIjpudWxsLCJwdXIiOiJ2YXJpYXRpb24ifX0=--3280c9a5d72536e0d01cdb32fd5a10fac7c7973c/gachiakuta.3840x2160.jpg"
+            href="./assets/banner.jpg"
             as="image"
             type="image/jpeg"
         />
-        <title>Gaeritag — Player Replica</title>
+        <title class="typewriter"></title>
         <link rel="stylesheet" href="style.css" />
         <!-- Howler.js (CDN) -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
@@ -38,9 +50,7 @@
             class="background-video"
             style="z-index: -1"
         >
-            <source
-                src="https://r2.guns.lol/e6bda08d-dfcf-4ad5-b574-5e771d361eba.mp4"
-            />
+            <source src="./assets/background.mp4" />
         </video>
         <div
             style="
@@ -83,7 +93,7 @@
                                                 data-nimg="1"
                                                 class="user-banner"
                                                 style="color: transparent"
-                                                src="https://api.konect.gg/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBMGJSVmc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--549eb47169e78fe4bbca8384da476ae034923817/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lKZDJWaWNBWTZCa1ZVT2hSeVpYTnBlbVZmZEc5ZmJHbHRhWFJiQjJrQzNBVnBBdlFCIiwiZXhwIjpudWxsLCJwdXIiOiJ2YXJpYXRpb24ifX0=--3280c9a5d72536e0d01cdb32fd5a10fac7c7973c/gachiakuta.3840x2160.jpg"
+                                                src="./assets/banner.jpg"
                                             />
                                         </div>
                                         <div class="user-informations">
@@ -97,7 +107,7 @@
                                                     data-nimg="1"
                                                     class="user-profile-picture"
                                                     style="color: transparent"
-                                                    src="https://api.konect.gg/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBMFhSVmc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--46f679c8a78026400689655518ced3974abfba65/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lKZDJWaWNBWTZCa1ZVT2hOeVpYTnBlbVZmZEc5ZlptbHNiRnNIYVFIK2FRSCsiLCJleHAiOm51bGwsInB1ciI6InZhcmlhdGlvbiJ9fQ==--9fe3585e448237b78e23eefec95f85befe7ad14a/ba61f9617eb91eaa880555dcb4d83bcd.jpg"
+                                                    src="./assets/icon.jpg"
                                                 />
                                             </div>
                                             <div class="username-container">
@@ -185,7 +195,7 @@
                                             <div class="media-player">
                                                 <img
                                                     class="track-image"
-                                                    src="https://r2.guns.lol/fa2b1771-dfea-48bd-bd6b-356b10fcad64.webp"
+                                                    src="./assets/track1_cover.png"
                                                 />
                                                 <div class="track-infos">
                                                     <h1
@@ -212,7 +222,7 @@
                                                                 <div
                                                                     class="track-progress-bar-current"
                                                                     style="
-                                                                        width: 80%;
+                                                                        width: 0%;
                                                                     "
                                                                 ></div>
                                                             </div>
@@ -297,25 +307,25 @@
                                     </div>
                                     <div class="responsive-grid">
                                         <item-card
-                                            src="https://api.konect.gg/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBOS9RVmc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--8d35c7f841267ec60023fd9a1b1e02a528807dab/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lKZDJWaWNBWTZCa1ZVT2hSeVpYTnBlbVZmZEc5ZmJHbHRhWFJiQjJrQzlBRnBBdlFCIiwiZXhwIjpudWxsLCJwdXIiOiJ2YXJpYXRpb24ifX0=--4a43f73be9eb68366704d8c3b619f2c564b76608/0_d59d95f4-0b1f-42eb-bc9d-567e79247c1c.png"
+                                            src="./assets/mouse.png"
                                             category-name="Mouse"
                                             name="Scyrox V8"
                                             href="https://scyrox.com/products/scyrox-v8?variant=41125308497982"
                                         ></item-card>
                                         <item-card
-                                            src="https://api.konect.gg/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBL1RRVmc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--5319f96ef5b2390e875dec2a18735967a048d527/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lKZDJWaWNBWTZCa1ZVT2hSeVpYTnBlbVZmZEc5ZmJHbHRhWFJiQjJrQzlBRnBBdlFCIiwiZXhwIjpudWxsLCJwdXIiOiJ2YXJpYXRpb24ifX0=--4a43f73be9eb68366704d8c3b619f2c564b76608/Adobe%20Express%20-%20file.png"
+                                            src="./assets/keyboard2.png"
                                             category-name="Keyboard"
                                             name="Nuphy Kick75"
                                             href="https://nuphy.com/products/nuphy-kick75?variant=42060483493997"
                                         ></item-card>
                                         <item-card
-                                            src="https://api.konect.gg/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBd0RSVmc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--617b47d2f232d12040283659272ae964a2f50928/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lKZDJWaWNBWTZCa1ZVT2hSeVpYTnBlbVZmZEc5ZmJHbHRhWFJiQjJrQzlBRnBBdlFCIiwiZXhwIjpudWxsLCJwdXIiOiJ2YXJpYXRpb24ifX0=--4a43f73be9eb68366704d8c3b619f2c564b76608/Keychron-V1-Max-QMK-VIA-Wireless-Custom-Mechanical-Keyboard-75_-Layout-Fully-Assembled-Knob-for-Mac-Windows-Linux-Gateron-Jupiter-Banana_1800x1800_48febfbc-855b-4791-80a5-41e38f10b939-removebg-preview.png"
+                                            src="./assets/keyboard1.png"
                                             category-name="Keyboard"
                                             name="Keychron V1 max"
                                             href="https://keychron.fr/products/keychron-v1-max-qmk-via-wireless-custom-mechanical-keyboard?variant=39669579776129"
                                         ></item-card>
                                         <item-card
-                                            src="https://api.konect.gg/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBMEhSVmc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--d5503ed7ac10ceb6d9c02ba029494d246720ad53/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lKZDJWaWNBWTZCa1ZVT2hSeVpYTnBlbVZmZEc5ZmJHbHRhWFJiQjJrQzlBRnBBdlFCIiwiZXhwIjpudWxsLCJwdXIiOiJ2YXJpYXRpb24ifX0=--4a43f73be9eb68366704d8c3b619f2c564b76608/pro-wireless-headset-gallery-1.png"
+                                            src="./assets/headset.png"
                                             category-name="Headset"
                                             name="Logitech G PRO X WIRELESS"
                                             href="https://www.logitechg.com/shop/p/pro-x-wireless-headset"
@@ -332,25 +342,25 @@
                                     </div>
                                     <div class="responsive-grid">
                                         <item-card
-                                            src="https://api.konect.gg/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBd3ZSVmc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--579f1da3773e76dcdf110e0178a1d85256dd02dd/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lKZDJWaWNBWTZCa1ZVT2hSeVpYTnBlbVZmZEc5ZmJHbHRhWFJiQjJrQzlBRnBBdlFCIiwiZXhwIjpudWxsLCJwdXIiOiJ2YXJpYXRpb24ifX0=--4a43f73be9eb68366704d8c3b619f2c564b76608/msi-ventus-2x-design-front.png"
+                                            src="./assets/gpu.png"
                                             category-name="GPU"
                                             name="RTX 5070 ventus x2"
                                             href="https://www.msi.com/Graphics-Card/GeForce-RTX-5070-12G-VENTUS-2X-OC"
                                         ></item-card>
                                         <item-card
-                                            src="https://api.konect.gg/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBOFp3Vnc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--00f7d2df4bca70a368d88a4ca100803079142210/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lKZDJWaWNBWTZCa1ZVT2hSeVpYTnBlbVZmZEc5ZmJHbHRhWFJiQjJrQzlBRnBBdlFCIiwiZXhwIjpudWxsLCJwdXIiOiJ2YXJpYXRpb24ifX0=--4a43f73be9eb68366704d8c3b619f2c564b76608/2505503-ryzen-7-7800x3d_1_-removebg-preview.png"
+                                            src="./assets/cpu.png"
                                             category-name="CPU"
                                             name="Ryzen 7 7800X3D"
                                             href="https://www.amd.com/fr/products/processors/desktops/ryzen/7000-series/amd-ryzen-7-7800x3d.html"
                                         ></item-card>
                                         <item-card
-                                            src="https://api.konect.gg/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBeURSVmc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--8bc2746f52b53c53d76ba88ed00e9f0e91f17dc7/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lKZDJWaWNBWTZCa1ZVT2hSeVpYTnBlbVZmZEc5ZmJHbHRhWFJiQjJrQzlBRnBBdlFCIiwiZXhwIjpudWxsLCJwdXIiOiJ2YXJpYXRpb24ifX0=--4a43f73be9eb68366704d8c3b619f2c564b76608/iCUE_LINK_H150i_RGB_01.png"
+                                            src="./assets/aio.png"
                                             category-name="Watercooling AIO"
                                             name="Icue Link H150I"
                                             href="https://www.corsair.com/fr/fr/p/cpu-coolers/cw-9061003-ww/icue-link-h150i-rgb-aio-liquid-cpu-cooler-cw-9061003-ww"
                                         ></item-card>
                                         <item-card
-                                            src="https://api.konect.gg/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBeWJSVmc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--1f59ea3c26f86737bd6c171718ba3f8a4f437cb6/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lKZDJWaWNBWTZCa1ZVT2hSeVpYTnBlbVZmZEc5ZmJHbHRhWFJiQjJrQzlBRnBBdlFCIiwiZXhwIjpudWxsLCJwdXIiOiJ2YXJpYXRpb24ifX0=--4a43f73be9eb68366704d8c3b619f2c564b76608/h9-flow-hero-black.png"
+                                            src="./assets/case.png"
                                             category-name="Case"
                                             name="NZXT H9 flow"
                                             href="https://nzxt.com/en-intl/products/h9-flow-2023"
