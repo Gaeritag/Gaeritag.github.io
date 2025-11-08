@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     const word = "gaeritag";
-    const typingSpeed = 1000;
-    const pauseTime = 200;
+    const typingSpeed = 400;
+    const pauseTime = 0;
     let i = 0;
     let direction = 1;
 
@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         i += direction;
-        setTimeout(updateTitle, typingSpeed);
+        setTimeout(updateTitle, document.hidden ? 1000 : typingSpeed);
     }
 
     updateTitle();
