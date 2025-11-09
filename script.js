@@ -30,8 +30,8 @@ document.addEventListener("DOMContentLoaded", () => {
 const tracks = [
     {
         name: "Montagem Mysterious Game",
-        src: "https://r2.guns.lol/eb1b138d-fcfa-4051-aaa3-f17bfe66ff8a.mp3",
-        cover: "https://r2.guns.lol/fa2b1771-dfea-48bd-bd6b-356b10fcad64.webp",
+        src: "./assets/track1.mp3",
+        cover: "./assets/track1_cover.png",
     },
 ];
 
