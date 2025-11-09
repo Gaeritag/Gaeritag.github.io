@@ -466,6 +466,7 @@ p {
         backdrop-filter: blur(var(--containerBlur));
         border-radius: var(--containerRadius);
         padding-top: 1.5rem;
+        padding-bottom: 1.5rem;
     }
 }
 
@@ -782,5 +783,3 @@ p {
     color: var(--userPrimaryColor);
     font-size: 34px;
 }
-
-/*  1024px breakpoint  */
