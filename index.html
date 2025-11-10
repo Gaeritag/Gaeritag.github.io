@@ -42,14 +42,7 @@
     </head>
     <body>
         <!-- Background container (auto-filled by JS) -->
-        <video
-            autoplay
-            muted
-            loop
-            playsinline
-            class="background-video"
-            style="z-index: -1"
-        >
+        <video autoplay muted loop playsinline class="background-video">
             <source src="./assets/background.mp4" />
         </video>
         <div
@@ -92,7 +85,6 @@
                                                 decoding="async"
                                                 data-nimg="1"
                                                 class="user-banner"
-                                                style="color: transparent"
                                                 src="./assets/banner.jpg"
                                             />
                                         </div>
@@ -106,7 +98,6 @@
                                                     decoding="async"
                                                     data-nimg="1"
                                                     class="user-profile-picture"
-                                                    style="color: transparent"
                                                     src="./assets/icon.jpg"
                                                 />
                                             </div>
@@ -127,9 +118,6 @@
                                                         decoding="async"
                                                         data-nimg="1"
                                                         class="flag"
-                                                        style="
-                                                            color: transparent;
-                                                        "
                                                         src="https://cdn.jsdelivr.net/gh/madebybowtie/FlagKit@2.2/Assets/SVG/FR.svg"
                                                     />
                                                     <span
@@ -230,7 +218,9 @@
                                                                 width="1em"
                                                                 height="1em"
                                                                 viewBox="0 0 24 24"
-                                                                style="border-radius: 5px;"
+                                                                style="
+                                                                    border-radius: 5px;
+                                                                "
                                                             >
                                                                 <path
                                                                     fill="currentColor"
@@ -243,23 +233,14 @@
                                         </div>
                                     </div>
                                     <div class="media-player-card-container">
-                                        <div
-                                            class="media-player-card"
-                                            style="padding: 15px"
-                                        >
+                                        <div class="media-player-card">
                                             <div class="media-player">
                                                 <img
                                                     class="track-image"
                                                     src="./assets/track1_cover.png"
                                                 />
                                                 <div class="track-infos">
-                                                    <h1
-                                                        class="track-name"
-                                                        style="
-                                                            font-weight: 500;
-                                                            font-size: 17px;
-                                                        "
-                                                    ></h1>
+                                                    <h1 class="track-name"></h1>
                                                     <div class="track-status">
                                                         <div
                                                             class="track-time-container"
