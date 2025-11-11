@@ -39,6 +39,8 @@
         <link rel="stylesheet" href="style.css" />
         <!-- Howler.js (CDN) -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
+        <!-- La (CDN) -->
+        <script src="https://cdn.jsdelivr.net/gh/0x5841524f4e/js-lanyard/lanyard.js"></script>
     </head>
     <body>
         <!-- Background container (auto-filled by JS) -->
@@ -130,6 +132,92 @@
                                                         >France | Lyon</span
                                                     >
                                                 </span>
+                                            </div>
+                                            <div class="discord-card-container">
+                                                <div
+                                                    class="discord-card-layout"
+                                                >
+                                                    <div class="discord-card">
+                                                        <div
+                                                            class="discord-container"
+                                                        >
+                                                            <div
+                                                                class="discord-icon-container"
+                                                            >
+                                                                <div
+                                                                    class="discord-icon-layout"
+                                                                >
+                                                                    <img
+                                                                        class="discord-pfp"
+                                                                        alt="Discord Avatar"
+                                                                        src="https://cdn.discordapp.com/avatars/1278421106122031206/3c89547eeab89b29e532527fb77aadcd.webp"
+                                                                    /><img
+                                                                        class="discord-icon-status"
+                                                                        src="assets/discord/dnd.png"
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                            <div
+                                                                class="discord-infos-container"
+                                                            >
+                                                                <div
+                                                                    class="discord-infos-layout"
+                                                                >
+                                                                    <div
+                                                                        class="discord-infos-user-container"
+                                                                    >
+                                                                        <div
+                                                                            class="tooltip-container"
+                                                                        >
+                                                                            <span
+                                                                                id="discord-username"
+                                                                                class="tooltip-trigger"
+                                                                            ></span>
+                                                                            <div
+                                                                                id="discord-id"
+                                                                                class="tooltip-bubble"
+                                                                            ></div>
+                                                                        </div>
+                                                                        <!-- <div
+                                                                    class="discord-badge-container"
+                                                                >
+                                                                    <div
+                                                                        class="discord-badge-icon-container tooltip-container"
+                                                                    >
+                                                                        <svg
+                                                                            xmlns="http://www.w3.org/2000/svg"
+                                                                            class="discord-badge-verified tooltip-trigger"
+                                                                            width="1em"
+                                                                            height="1em"
+                                                                            viewBox="1 1.5 22 21"
+                                                                        >
+                                                                            <path
+                                                                                fill="currentColor"
+                                                                                d="m8.6 22.5l-1.9-3.2l-3.6-.8l.35-3.7L1 12l2.45-2.8l-.35-3.7l3.6-.8l1.9-3.2L12 2.95l3.4-1.45l1.9 3.2l3.6.8l-.35 3.7L23 12l-2.45 2.8l.35 3.7l-3.6.8l-1.9 3.2l-3.4-1.45l-3.4 1.45Zm2.35-6.95L16.6 9.9l-1.4-1.45l-4.25 4.25l-2.15-2.1L7.4 12l3.55 3.55Z"
+                                                                            ></path>
+                                                                        </svg>
+                                                                        <div class="tooltip-bubble">Verified</div>
+                                                                    </div>
+                                                                </div> -->
+                                                                    </div>
+                                                                    <h3
+                                                                        style="
+                                                                            overflow: hidden;
+                                                                            text-overflow: ellipsis;
+                                                                        "
+                                                                    >
+                                                                        <span
+                                                                            id="activity"
+                                                                        ></span>
+                                                                    </h3>
+                                                                </div>
+                                                                <div
+                                                                    class=""
+                                                                ></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div
                                                 class="social-medias-container"
@@ -412,6 +500,7 @@
         <script src="media-player.js"></script>
         <script src="title-typewritter.js"></script>
         <script src="tooltip.js"></script>
+        <script src="discord-fetcher.js"></script>
         <script src="./components/item-card.component.js"></script>
     </body>
 </html>
