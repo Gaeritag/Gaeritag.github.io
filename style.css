@@ -133,7 +133,7 @@ p {
 .tooltip-container {
     position: relative;
     display: inline-block;
-    cursor: pointer;
+    cursor: auto;
 }
 
 .tooltip-trigger {
@@ -310,7 +310,6 @@ p {
 }
 
 .user-card {
-    overflow: hidden;
     padding: 0%;
 }
 
@@ -412,7 +411,6 @@ p {
     display: flex;
     width: 100%;
     justify-content: center;
-    overflow: hidden;
     margin-top: 10px;
 }
 
