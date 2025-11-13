@@ -28,23 +28,21 @@ function isEmpty(obj) {
 }
 
 function handleDiscordUpdate(data) {
-    if (isEmpty(data)) return;
+    if (!data || Object.keys(data).length === 0) return;
 
-    // Update profile picture
-    if (data.discord_user.avatar == null) {
-        discordPfp.src = "https://cdn.discordapp.com/embed/avatars/4.png";
-    } else {
-        discordPfp.src = `https://cdn.discordapp.com/avatars/${data.discord_user.id}/${data.discord_user.avatar}.webp`;
-    }
+    // --- Update profile picture ---
+    discordPfp.src = data.discord_user.avatar
+        ? `https://cdn.discordapp.com/avatars/${data.discord_user.id}/${data.discord_user.avatar}.webp`
+        : "https://cdn.discordapp.com/embed/avatars/4.png";
 
-    // Update status
+    // --- Update status ---
     discordStatus.src = `./assets/discord/${data.discord_status}.png`;
 
-    // Handle guild tag logic
+    // --- Handle guild tag ---
     const discordBadgeExisting = discordContainer.querySelector(
         ".discord-infos-user-guild-tag"
     );
-    console.log(data);
+
     if (
         data.discord_user.primary_guild &&
         data.discord_user.primary_guild.identity_enabled
@@ -67,124 +65,223 @@ function handleDiscordUpdate(data) {
         discordBadgeExisting.remove();
     }
 
-    // Handle username and id
-    discordUsername.innerHTML = data.discord_user.username;
-    discordID.innerHTML = data.discord_user.id;
-    console.log(data.activities.length != 0);
-    // Handle activities
-    if (data.activities.length != 0) {
-        if (data.activities[0]?.id == "custom") {
-            discordActivity.innerHTML = data.activities[0]?.state;
-        } else if (data.listening_to_spotify) {
-            discordActivity.innerHTML = data.spotify.song;
+    // --- Update username and ID ---
+    discordUsername.textContent = data.discord_user.username;
+    discordID.textContent = data.discord_user.id;
+
+    // --- Update main activity text ---
+    if (data.activities?.length) {
+        const activity =
+            data.activities[0]?.id === "custom"
+                ? data.activities[1] ?? data.activities[0]
+                : data.activities[0];
+
+        if (data.listening_to_spotify) {
+            discordActivity.textContent = data.spotify.song;
         } else {
-            discordActivity.innerHTML = data.activities[0]?.name;
+            discordActivity.textContent =
+                activity?.name || "Currently doing nothing";
         }
     } else {
-        discordActivity.innerHTML = "Currently doing nothing";
+        discordActivity.textContent = "Currently doing nothing";
     }
 
-    const existing = document.querySelector(".activity-container");
-    if (existing) existing.remove();
+    // --- Remove old activity container ---
+    document
+        .querySelectorAll(".activity-container")
+        .forEach((el) => el.remove());
 
-    // Create base container
+    // --- Create new activity container ---
     const activityContainer = document.createElement("div");
-    activityContainer.className = "activity-container"; // keep name for consistency
-    activityContainer.style = `
-      flex-direction: column;
+    activityContainer.className = "activity-container";
+    activityContainer.style.cssText = `
       display: flex;
+      flex-direction: column;
       width: 100%;
       justify-content: center;
       align-items: center;
-  `;
+    `;
 
     const hr = document.createElement("hr");
-    hr.style = "width: 85%; color: rgba(252, 232, 232, 0.3); margin: 10px;";
+    hr.style.cssText = "width: 85%; color: rgba(252, 232, 232, 0.3); margin: 10px;";
 
     const activityLayout = document.createElement("div");
     activityLayout.className = "activity-layout";
-    activityLayout.style = `
-      flex-direction: row;
+    activityLayout.style.cssText = `
       display: flex;
+      flex-direction: row;
       width: 100%;
       justify-content: center;
       align-items: center;
       gap: 1rem;
       padding: 6px;
-  `;
+    `;
 
     const activityContent = document.createElement("div");
     activityContent.className = "activity-content";
-    activityContent.style = `
+    activityContent.style.cssText = `
       display: flex;
       flex-direction: column;
       justify-content: center;
       gap: 4px;
-  `;
+    `;
 
-    const activityImage = document.createElement("img");
-    activityImage.className = "activity-image";
-    activityImage.style = "max-width: 70px; border-radius: 6px;";
+    // --- Images container ---
+    const activityImageContainer = document.createElement("div");
+    activityImageContainer.className = "activity-image-container";
+    activityImageContainer.style.cssText = `
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+    `;
 
-    const line1 = document.createElement("span"); // Title (app name)
-    const line2 = document.createElement("span"); // State or artist
-    const line3 = document.createElement("span"); // Details or song title
+    // --- Create lines ---
+    const line1 = document.createElement("span");
+    const line2 = document.createElement("span");
+    const line3 = document.createElement("span");
 
-    // --- Handle Spotify case ---
+    // --- Large activity ---
+    const largeActivityContainer = document.createElement("div");
+    largeActivityContainer.className = "large-activity-container tooltip-container";
+    largeActivityContainer.style.cssText = `
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+    `;
+
+    const largeActivityImage = document.createElement("img");
+    largeActivityImage.className = "large-activity-image tooltip-trigger";
+    largeActivityImage.style.cssText = "max-width: 70px; border-radius: 6px;";
+
+    const largeActivityTooltip = document.createElement("div");
+    largeActivityTooltip.className = "tooltip-bubble";
+
+    // --- Small activity ---
+    const smallActivityContainer = document.createElement("div");
+    const smallActivityImage = document.createElement("img");
+    const smallActivityTooltip = document.createElement("div");
+    smallActivityTooltip.className = "tooltip-bubble";
+
+    // --- Fill content based on activity ---
     if (data.listening_to_spotify) {
-        activityImage.src = data.spotify.album_art_url;
+        // Spotify
+        largeActivityImage.src = data.spotify.album_art_url;
 
         line1.textContent = "Listening to Spotify";
-        line1.style =
-            "font-weight: bold; color: rgba(0,240,30,0.8); font-family: var(--secondaryFont);";
+        line1.style.cssText = "font-weight: bold; color: rgba(0,240,30,0.8); font-family: var(--secondaryFont);";
 
         line2.textContent = data.spotify.song;
-        line2.style =
-            "font-weight: bold; opacity: 0.8; font-family: var(--secondaryFont);";
+        line2.style.cssText = "font-weight: bold; opacity: 0.8; font-family: var(--secondaryFont);";
 
         line3.textContent = data.spotify.artist;
-        line3.style =
-            "color: rgba(252,232,232,0.8); font-family: var(--secondaryFont);";
-    }
+        line3.style.cssText = "color: rgba(252,232,232,0.8); font-family: var(--secondaryFont);";
 
-    // --- Handle any other activity ---
-    else if (data.activities && data.activities.length > 0) {
+        largeActivityTooltip.textContent = `${data.spotify.song}\n${data.spotify.artist}`;
+    } else if (data.activities?.length) {
         const activity =
-            data.activities[data.activities[0].id == "custom" ? 1 : 0];
+            data.activities[0]?.id === "custom"
+                ? data.activities[1] ?? data.activities[0]
+                : data.activities[0];
 
         // Large image
         if (activity.assets?.large_image) {
-            const appId = activity.application_id;
-            const imgId = activity.assets.large_image; // clean
-            activityImage.src = imgId.includes("mp:")
-                ? extractAndSanitizeUrl(imgId)
-                : `https://cdn.discordapp.com/app-assets/${appId}/${imgId}.webp`;
-        } else {
-            activityImage.src =
-                "https://cdn.discordapp.com/embed/avatars/0.png"; // fallback
+            largeActivityImage.src = activity.assets.large_image.includes("mp:")
+                ? extractAndSanitizeUrl(activity.assets.large_image)
+                : `https://cdn.discordapp.com/app-assets/${activity.application_id}/${activity.assets.large_image}.webp`;
+
+            if (activity.assets.large_text) {
+                largeActivityTooltip.textContent = activity.assets.large_text;
+            }
         }
 
-        // Title line — app name
+        // Small image
+        if (activity.assets?.small_image) {
+            smallActivityContainer.className = "small-activity-container tooltip-container";
+            smallActivityContainer.style.cssText = `
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              position: absolute;
+              bottom: -2px;
+              right: -2px;
+            `;
+
+            smallActivityImage.className = "small-activity-image tooltip-trigger";
+            smallActivityImage.style.cssText = `
+              width: 24px;
+              height: 24px;
+              object-fit: cover;
+              border-radius: 50%;
+            `;
+
+            if (activity.assets.small_text) {
+                smallActivityTooltip.textContent = activity.assets.small_text;
+            }
+
+            smallActivityImage.src = activity.assets.small_image.includes("mp:")
+                ? extractAndSanitizeUrl(activity.assets.small_image)
+                : `https://cdn.discordapp.com/app-assets/${activity.application_id}/${activity.assets.small_image}.webp`;
+
+            smallActivityContainer.append(
+                smallActivityImage,
+                smallActivityTooltip
+            );
+        }
+
+        // Text lines
         line1.textContent = activity.name;
-        line1.style =
-            "font-weight: bold; color: rgba(0,160,255,0.8); font-family: var(--secondaryFont);";
-
-        // State line (optional)
+        line1.style.cssText = "font-weight: bold; color: rgba(0,160,255,0.8); font-family: var(--secondaryFont);";
         line2.textContent = activity.details || "";
-        line2.style = "opacity: 0.8; font-family: var(--secondaryFont);";
-
-        // Details line (optional)
+        line2.style.cssText = "opacity: 0.8; font-family: var(--secondaryFont);";
         line3.textContent = activity.state || "";
-        line3.style =
-            "color: rgba(252,232,232,0.8); font-family: var(--secondaryFont);";
-
-        activityContent.append(line1, line2, line3);
-        activityLayout.append(activityImage, activityContent);
-        activityContainer.append(hr, activityLayout);
-
-        // Add to your card
-        discordCard.appendChild(activityContainer);
+        line3.style.cssText = "color: rgba(252,232,232,0.8); font-family: var(--secondaryFont);";
     }
+
+    // --- Append elements ---
+    activityContent.append(line1, line2, line3);
+    largeActivityContainer.append(largeActivityImage, largeActivityTooltip);
+    activityImageContainer.append(largeActivityContainer);
+
+    if (smallActivityContainer.childNodes.length > 0) {
+        activityImageContainer.append(smallActivityContainer);
+    }
+
+    activityLayout.append(activityImageContainer, activityContent);
+    activityContainer.append(hr, activityLayout);
+
+    // --- Add to card ---
+    discordCard.appendChild(activityContainer);
+
+    // --- Initialize tooltips ---
+    initTooltips();
 }
 
+// --- Helper function for tooltips ---
+function initTooltips() {
+    document.querySelectorAll(".tooltip-container").forEach((container) => {
+        const trigger = container.querySelector(".tooltip-trigger");
+        const bubble = container.querySelector(".tooltip-bubble");
+        if (!trigger || !bubble || trigger.dataset.tooltipInit) return;
+        trigger.dataset.tooltipInit = "true";
 
+        const showBubble = () => bubble.classList.add("visible");
+        const hideBubble = () => bubble.classList.remove("visible");
+
+        trigger.addEventListener("mouseenter", showBubble);
+        bubble.addEventListener("mouseenter", showBubble);
+
+        trigger.addEventListener("mouseleave", () => {
+            setTimeout(() => {
+                if (!bubble.matches(":hover")) hideBubble();
+            }, 50);
+        });
+
+        bubble.addEventListener("mouseleave", () => {
+            setTimeout(() => {
+                if (!trigger.matches(":hover")) hideBubble();
+            }, 50);
+        });
+    });
+}
