@@ -20,13 +20,6 @@ function extractAndSanitizeUrl(input) {
     return match ? match[0].replace("https/", "https://") : null;
 }
 
-function isEmpty(obj) {
-    for (const prop in obj) {
-        if (Object.hasOwn(obj, prop)) return false;
-    }
-    return true;
-}
-
 function handleDiscordUpdate(data) {
     if (!data || Object.keys(data).length === 0) return;
 
@@ -35,13 +28,12 @@ function handleDiscordUpdate(data) {
         ? `https://cdn.discordapp.com/avatars/${data.discord_user.id}/${data.discord_user.avatar}.webp`
         : "https://cdn.discordapp.com/embed/avatars/4.png";
 
-    // --- Update status ---
+    // STATUS ICON
     discordStatus.src = `./assets/discord/${data.discord_status}.png`;
 
-    // --- Handle guild tag ---
-    const discordBadgeExisting = discordContainer.querySelector(
-        ".discord-infos-user-guild-tag"
-    );
+    // GUILD TAG
+    const discordBadgeExisting =
+        discordContainer.querySelector(".discord-infos-user-guild-tag");
 
     if (
         data.discord_user.primary_guild &&
@@ -65,55 +57,64 @@ function handleDiscordUpdate(data) {
         discordBadgeExisting.remove();
     }
 
-    // --- Update username and ID ---
+    // USERNAME & ID
     discordUsername.textContent = data.discord_user.username;
     discordID.textContent = data.discord_user.id;
 
-    // --- Update main activity text ---
-    if (data.activities?.length) {
-        const activity =
-            data.activities[0]?.id === "custom"
-                ? data.activities[1] ?? data.activities[0]
-                : data.activities[0];
-        console.log(data)
+    // ACTIVITY EXTRACTION
+    const activities = data.activities || [];
 
-        if (data.listening_to_spotify) {
-            discordActivity.textContent = data.activities[0]?.id === "custom"
-                ? data.activities[0].state
-                : data.spotify.song
-        } else {
-            discordActivity.textContent = data.activities[0]?.id === "custom"
-                ? data.activities[0].state
-                : "Currently doing nothing"
-        }
+    const customActivity = activities.find(a => a.id === "custom");
+    const realActivities = activities.filter(a => a.id !== "custom");
+
+    // Only real activity to show in card
+    const primaryActivity = data.listening_to_spotify
+        ? null
+        : realActivities[0] || null;
+
+    // MAIN TEXT STATUS (discordActivity)
+    if (customActivity) {
+        discordActivity.textContent = customActivity.state || "Custom Status";
+    } else if (data.listening_to_spotify) {
+        discordActivity.textContent = data.spotify.song;
+    } else if (primaryActivity) {
+        discordActivity.textContent = primaryActivity.name;
     } else {
         discordActivity.textContent = "Currently doing nothing";
     }
 
-    // --- Remove old activity container ---
-    document
-        .querySelectorAll(".activity-container")
-        .forEach((el) => el.remove());
+    // CLEAR OLD ACTIVITY CARD
+    const existing = document.querySelector(".activity-container");
+    if (existing) existing.remove();
 
-    // --- Create new activity container ---
+    // DO WE SHOW THE CARD?
+    const showCard =
+        data.listening_to_spotify ||
+        (primaryActivity !== null);
+
+    if (!showCard) {
+        return; // NO CARD DISPLAYED
+    }
+
+    // CREATE ACTIVITY CARD
     const activityContainer = document.createElement("div");
     activityContainer.className = "activity-container";
-    activityContainer.style.cssText = `
-      display: flex;
+    activityContainer.style = `
       flex-direction: column;
+      display: flex;
       width: 100%;
       justify-content: center;
       align-items: center;
     `;
 
     const hr = document.createElement("hr");
-    hr.style.cssText = "width: 85%; color: rgba(252, 232, 232, 0.3); margin: 10px;";
+    hr.style = "width: 85%; color: rgba(252, 232, 232, 0.3); margin: 10px;";
 
     const activityLayout = document.createElement("div");
     activityLayout.className = "activity-layout";
-    activityLayout.style.cssText = `
-      display: flex;
+    activityLayout.style = `
       flex-direction: row;
+      display: flex;
       width: 100%;
       justify-content: center;
       align-items: center;
@@ -123,87 +124,116 @@ function handleDiscordUpdate(data) {
 
     const activityContent = document.createElement("div");
     activityContent.className = "activity-content";
-    activityContent.style.cssText = `
+    activityContent.style = `
       display: flex;
       flex-direction: column;
       justify-content: center;
       gap: 4px;
     `;
 
-    // --- Images container ---
-    const activityImageContainer = document.createElement("div");
-    activityImageContainer.className = "activity-image-container";
-    activityImageContainer.style.cssText = `
+    // Image containers
+    const imageContainer = document.createElement("div");
+    imageContainer.className = "activity-content";
+    imageContainer.style = `
       display: flex;
       flex-direction: column;
       justify-content: center;
       position: relative;
     `;
 
-    // --- Create lines ---
+    // Large picture (main)
+    const largeContainer = document.createElement("div");
+    largeContainer.className = "large-activity-content tooltip-container";
+    largeContainer.style = `
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+    `;
+
+    const largeImg = document.createElement("img");
+    largeImg.className = "large-activity-image tooltip-trigger";
+    largeImg.style = "max-width: 70px; border-radius: 6px;";
+
+    const largeTooltip = document.createElement("div");
+
+    // Small picture (corner)
+    const smallContainer = document.createElement("div");
+    const smallImg = document.createElement("img");
+    const smallTooltip = document.createElement("div");
+
     const line1 = document.createElement("span");
     const line2 = document.createElement("span");
     const line3 = document.createElement("span");
 
-    // --- Large activity ---
-    const largeActivityContainer = document.createElement("div");
-    largeActivityContainer.className = "large-activity-container tooltip-container";
-    largeActivityContainer.style.cssText = `
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      position: relative;
-    `;
-
-    const largeActivityImage = document.createElement("img");
-    largeActivityImage.className = "large-activity-image tooltip-trigger";
-    largeActivityImage.style.cssText = "max-width: 70px; border-radius: 6px;";
-
-    const largeActivityTooltip = document.createElement("div");
-    largeActivityTooltip.className = "tooltip-bubble";
-
-    // --- Small activity ---
-    const smallActivityContainer = document.createElement("div");
-    const smallActivityImage = document.createElement("img");
-    const smallActivityTooltip = document.createElement("div");
-    smallActivityTooltip.className = "tooltip-bubble";
-
-    // --- Fill content based on activity ---
+    // SPOTIFY CASE
     if (data.listening_to_spotify) {
-        // Spotify
-        largeActivityImage.src = data.spotify.album_art_url;
+        largeImg.src = data.spotify.album_art_url;
 
         line1.textContent = "Listening to Spotify";
-        line1.style.cssText = "font-weight: bold; color: rgba(0,240,30,0.8); font-family: var(--secondaryFont);";
+        line1.style = "font-weight: bold; color: rgba(0,240,30,0.8); font-family: var(--secondaryFont);";
 
         line2.textContent = data.spotify.song;
-        line2.style.cssText = "font-weight: bold; opacity: 0.8; font-family: var(--secondaryFont);";
+        line2.style = "font-weight: bold; opacity: 0.8; font-family: var(--secondaryFont);";
 
         line3.textContent = data.spotify.artist;
-        line3.style.cssText = "color: rgba(252,232,232,0.8); font-family: var(--secondaryFont);";
+        line3.style = "color: rgba(252,232,232,0.8); font-family: var(--secondaryFont);";
 
-        largeActivityTooltip.textContent = `${data.spotify.song}\n${data.spotify.artist}`;
-    } else if (data.activities?.length) {
-        const activity =
-            data.activities[0]?.id === "custom"
-                ? data.activities[1] ?? data.activities[0]
-                : data.activities[0];
+        largeTooltip.className = "large-activity-tooltip tooltip-bubble";
+        largeTooltip.style = "bottom: 95%;";
+        largeTooltip.innerHTML = data.spotify.song + "<br>" + data.spotify.artist;
 
-        // Large image
+        // APPEND STRUCTURE
+        activityContent.append(line1, line2, line3);
+        largeContainer.append(largeImg, largeTooltip);
+
+        imageContainer.append(largeContainer);
+        activityLayout.append(imageContainer, activityContent);
+        activityContainer.append(hr, activityLayout);
+
+        discordCard.appendChild(activityContainer);
+    }
+
+    // NORMAL ACTIVITY CASE
+    else if (primaryActivity) {
+        const activity = primaryActivity;
+
+        // LARGE IMAGE
         if (activity.assets?.large_image) {
-            largeActivityImage.src = activity.assets.large_image.includes("mp:")
-                ? extractAndSanitizeUrl(activity.assets.large_image)
-                : `https://cdn.discordapp.com/app-assets/${activity.application_id}/${activity.assets.large_image}.webp`;
+            if (activity.assets.large_text !== "") {
+                largeTooltip.className =
+                    "large-activity-tooltip tooltip-bubble";
+                largeTooltip.style = "bottom: 95%;";
+                largeTooltip.innerHTML = activity.assets.large_text;
+            }
 
-            if (activity.assets.large_text) {
-                largeActivityTooltip.textContent = activity.assets.large_text;
+            const appId = activity.application_id;
+            const imgId = activity.assets.large_image;
+
+            largeImg.src = imgId.includes("mp:")
+                ? extractAndSanitizeUrl(imgId)
+                : `https://cdn.discordapp.com/app-assets/${appId}/${imgId}.webp`;
+            if (activity.assets?.small_image) {
+                largeImg.style.cssText += `
+                  mask-image: radial-gradient(
+                    circle 14px at calc(100% - 10px) calc(100% - 10px),
+                    transparent 0 14px,
+                    black 15px
+                  );
+                    -webkit-mask-image: radial-gradient(
+                    circle 14px at calc(100% - 10px) calc(100% - 10px),
+                    transparent 0 14px,
+                    black 15px
+                  );
+                `;
             }
         }
 
-        // Small image
+        // SMALL IMAGE
         if (activity.assets?.small_image) {
-            smallActivityContainer.className = "small-activity-container tooltip-container";
-            smallActivityContainer.style.cssText = `
+            smallContainer.className =
+                "small-activity-container tooltip-container";
+            smallContainer.style = `
               display: flex;
               flex-direction: column;
               justify-content: center;
@@ -212,89 +242,49 @@ function handleDiscordUpdate(data) {
               right: -2px;
             `;
 
-            smallActivityImage.className = "small-activity-image tooltip-trigger";
-            smallActivityImage.style.cssText = `
+            smallImg.className = "small-activity-image tooltip-trigger";
+            smallImg.style = `
               width: 24px;
               height: 24px;
               object-fit: cover;
               border-radius: 50%;
             `;
 
-            if (activity.assets.small_text) {
-                smallActivityTooltip.textContent = activity.assets.small_text;
+            if (activity.assets.small_text !== "") {
+                smallTooltip.className =
+                    "small-activity-tooltip tooltip-bubble";
+                smallTooltip.style = "bottom: 110%;";
+                smallTooltip.innerHTML = activity.assets.small_text;
             }
 
-            smallActivityImage.src = activity.assets.small_image.includes("mp:")
-                ? extractAndSanitizeUrl(activity.assets.small_image)
-                : `https://cdn.discordapp.com/app-assets/${activity.application_id}/${activity.assets.small_image}.webp`;
+            const appId = activity.application_id;
+            const imgId = activity.assets.small_image;
 
-            smallActivityContainer.append(
-                smallActivityImage,
-                smallActivityTooltip
-            );
+            smallImg.src = imgId.includes("mp:")
+                ? extractAndSanitizeUrl(imgId)
+                : `https://cdn.discordapp.com/app-assets/${appId}/${imgId}.webp`;
         }
 
-        // Text lines
+        // TEXT LINES
         line1.textContent = activity.name;
-        line1.style.cssText = "font-weight: bold; color: rgba(0,160,255,0.8); font-family: var(--secondaryFont);";
+        line1.style = "font-weight: bold; color: rgba(0,160,255,0.8); font-family: var(--secondaryFont);";
+
         line2.textContent = activity.details || "";
-        line2.style.cssText = "opacity: 0.8; font-family: var(--secondaryFont);";
+        line2.style = "opacity: 0.8; font-family: var(--secondaryFont);";
+
         line3.textContent = activity.state || "";
-        line3.style.cssText = "color: rgba(252,232,232,0.8); font-family: var(--secondaryFont);";
+        line3.style = "color: rgba(252,232,232,0.8); font-family: var(--secondaryFont);";
+
+        // APPEND STRUCTURE
+        activityContent.append(line1, line2, line3);
+        largeContainer.append(largeImg, largeTooltip);
+        smallContainer.append(smallImg, smallTooltip);
+
+        imageContainer.append(largeContainer, smallContainer);
+        activityLayout.append(imageContainer, activityContent);
+        activityContainer.append(hr, activityLayout);
+
+        discordCard.appendChild(activityContainer);
     }
-
-    // --- Append elements ---
-    if (data.activities?.length > 0) {
-        if ((data.activities.length > 0 && data.activities[0].id != "custom") || data.listening_to_spotify) {
-            activityContent.append(line1, line2, line3);
-            largeActivityContainer.append(largeActivityImage, largeActivityTooltip);
-            activityImageContainer.append(largeActivityContainer);
-        }
-    }
-
-    if (smallActivityContainer.childNodes.length > 0) {
-        activityImageContainer.append(smallActivityContainer);
-    }
-
-    if (data.activities?.length > 0) {
-        if (data.activities.length > 0 && data.activities[0].id != "custom" || data.listening_to_spotify) {
-            activityLayout.append(activityImageContainer, activityContent);
-            activityContainer.append(hr, activityLayout);
-
-            // --- Add to card ---
-            discordCard.appendChild(activityContainer);
-        }
-    }
-    console.error(data)
-
-    // --- Initialize tooltips ---
-    initTooltips();
 }
 
-// --- Helper function for tooltips ---
-function initTooltips() {
-    document.querySelectorAll(".tooltip-container").forEach((container) => {
-        const trigger = container.querySelector(".tooltip-trigger");
-        const bubble = container.querySelector(".tooltip-bubble");
-        if (!trigger || !bubble || trigger.dataset.tooltipInit) return;
-        trigger.dataset.tooltipInit = "true";
-
-        const showBubble = () => bubble.classList.add("visible");
-        const hideBubble = () => bubble.classList.remove("visible");
-
-        trigger.addEventListener("mouseenter", showBubble);
-        bubble.addEventListener("mouseenter", showBubble);
-
-        trigger.addEventListener("mouseleave", () => {
-            setTimeout(() => {
-                if (!bubble.matches(":hover")) hideBubble();
-            }, 50);
-        });
-
-        bubble.addEventListener("mouseleave", () => {
-            setTimeout(() => {
-                if (!trigger.matches(":hover")) hideBubble();
-            }, 50);
-        });
-    });
-}
