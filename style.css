@@ -155,6 +155,7 @@ p {
     padding: 0.25rem 0.625rem;
     white-space: nowrap;
     opacity: 0;
+    text-align: center;
     pointer-events: none;
     backdrop-filter: blur(5px);
     transition: transform 0.15s ease-out, opacity 0.15s ease-in;
