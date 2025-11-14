@@ -75,12 +75,16 @@ function handleDiscordUpdate(data) {
             data.activities[0]?.id === "custom"
                 ? data.activities[1] ?? data.activities[0]
                 : data.activities[0];
+        console.log(data)
 
         if (data.listening_to_spotify) {
-            discordActivity.textContent = data.spotify.song;
+            discordActivity.textContent = data.activities[0]?.id === "custom"
+                ? data.activities[0].state
+                : data.spotify.song
         } else {
-            discordActivity.textContent =
-                activity?.name || "Currently doing nothing";
+            discordActivity.textContent = data.activities[0]?.id === "custom"
+                ? data.activities[0].state
+                : "Currently doing nothing"
         }
     } else {
         discordActivity.textContent = "Currently doing nothing";
@@ -240,19 +244,28 @@ function handleDiscordUpdate(data) {
     }
 
     // --- Append elements ---
-    activityContent.append(line1, line2, line3);
-    largeActivityContainer.append(largeActivityImage, largeActivityTooltip);
-    activityImageContainer.append(largeActivityContainer);
+    if (data.activities?.length > 0) {
+        if ((data.activities.length > 0 && data.activities[0].id != "custom") || data.listening_to_spotify) {
+            activityContent.append(line1, line2, line3);
+            largeActivityContainer.append(largeActivityImage, largeActivityTooltip);
+            activityImageContainer.append(largeActivityContainer);
+        }
+    }
 
     if (smallActivityContainer.childNodes.length > 0) {
         activityImageContainer.append(smallActivityContainer);
     }
 
-    activityLayout.append(activityImageContainer, activityContent);
-    activityContainer.append(hr, activityLayout);
+    if (data.activities?.length > 0) {
+        if (data.activities.length > 0 && data.activities[0].id != "custom" || data.listening_to_spotify) {
+            activityLayout.append(activityImageContainer, activityContent);
+            activityContainer.append(hr, activityLayout);
 
-    // --- Add to card ---
-    discordCard.appendChild(activityContainer);
+            // --- Add to card ---
+            discordCard.appendChild(activityContainer);
+        }
+    }
+    console.error(data)
 
     // --- Initialize tooltips ---
     initTooltips();
