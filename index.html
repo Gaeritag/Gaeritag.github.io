@@ -4,37 +4,10 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <link rel="preload" href="style.css" as="style" />
-        <link rel="preload" href="script.js" as="script" />
-        <link
-            rel="preload"
-            href="./fonts/Satoshi.woff2"
-            as="font"
-            type="font/woff2"
-        />
-        <link
-            rel="preload"
-            href="./fonts/DrukWide-Bold.woff2"
-            as="font"
-            type="font/woff2"
-        />
-        <link
-            rel="preload"
-            href="./fonts/DrukWide-Medium.woff2"
-            as="font"
-            type="font/woff2"
-        />
-        <link
-            rel="preload"
-            href="./assets/background.mp4"
-            as="video"
-            type="video/mp4"
-        />
-        <link
-            rel="preload"
-            href="./assets/banner.jpg"
-            as="image"
-            type="image/jpeg"
-        />
+        <link rel="preload" href="media-player.js" as="script" />
+        <link rel="preload" href="title-typewritter.js" as="script" />
+        <link rel="preload" href="discord-fetcher.js" as="script" />
+        <link rel="preload" href="./components/item-card.component.js" as="script" />
         <title class="typewriter"></title>
         <link rel="stylesheet" href="style.css" />
         <!-- Howler.js (CDN) -->
@@ -44,7 +17,7 @@
     </head>
     <body>
         <!-- Background container (auto-filled by JS) -->
-        <video autoplay muted loop playsinline class="background-video">
+        <video autoplay muted loop playsinline preload class="background-video">
             <source src="./assets/background.mp4" />
         </video>
         <div
