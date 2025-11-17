@@ -32,8 +32,9 @@ function handleDiscordUpdate(data) {
     discordStatus.src = `./assets/discord/${data.discord_status}.png`;
 
     // GUILD TAG
-    const discordBadgeExisting =
-        discordContainer.querySelector(".discord-infos-user-guild-tag");
+    const discordBadgeExisting = discordContainer.querySelector(
+        ".discord-infos-user-guild-tag"
+    );
 
     if (
         data.discord_user.primary_guild &&
@@ -64,8 +65,8 @@ function handleDiscordUpdate(data) {
     // ACTIVITY EXTRACTION
     const activities = data.activities || [];
 
-    const customActivity = activities.find(a => a.id === "custom");
-    const realActivities = activities.filter(a => a.id !== "custom");
+    const customActivity = activities.find((a) => a.id === "custom");
+    const realActivities = activities.filter((a) => a.id !== "custom");
 
     // Only real activity to show in card
     const primaryActivity = data.listening_to_spotify
@@ -88,9 +89,7 @@ function handleDiscordUpdate(data) {
     if (existing) existing.remove();
 
     // DO WE SHOW THE CARD?
-    const showCard =
-        data.listening_to_spotify ||
-        (primaryActivity !== null);
+    const showCard = data.listening_to_spotify || primaryActivity !== null;
 
     if (!showCard) {
         return; // NO CARD DISPLAYED
@@ -153,7 +152,7 @@ function handleDiscordUpdate(data) {
 
     const largeImg = document.createElement("img");
     largeImg.className = "large-activity-image tooltip-trigger";
-    largeImg.style = "max-width: 70px; border-radius: 6px;";
+    largeImg.style = "max-width: 70px; border-radius: 6px; cursor: pointer;";
 
     const largeTooltip = document.createElement("div");
 
@@ -169,19 +168,27 @@ function handleDiscordUpdate(data) {
     // SPOTIFY CASE
     if (data.listening_to_spotify) {
         largeImg.src = data.spotify.album_art_url;
-
+        largeImg.onclick = () => {
+            window.open(
+                `https://open.spotify.com/track/${data.spotify.track_id}`, // to open app: `spotify:track:${data.spotify.track_id}`
+            );
+        };
         line1.textContent = "Listening to Spotify";
-        line1.style = "font-weight: bold; color: rgba(0,240,30,0.8); font-family: var(--secondaryFont);";
+        line1.style =
+            "font-weight: bold; color: rgba(0,240,30,0.8); font-family: var(--secondaryFont);";
 
         line2.textContent = data.spotify.song;
-        line2.style = "font-weight: bold; opacity: 0.8; font-family: var(--secondaryFont);";
+        line2.style =
+            "font-weight: bold; opacity: 0.8; font-family: var(--secondaryFont);";
 
         line3.textContent = data.spotify.artist;
-        line3.style = "color: rgba(252,232,232,0.8); font-family: var(--secondaryFont);";
+        line3.style =
+            "color: rgba(252,232,232,0.8); font-family: var(--secondaryFont);";
 
         largeTooltip.className = "large-activity-tooltip tooltip-bubble";
         largeTooltip.style = "bottom: 95%;";
-        largeTooltip.innerHTML = data.spotify.song + "<br>" + data.spotify.artist;
+        largeTooltip.innerHTML =
+            data.spotify.song + "<br>" + data.spotify.artist;
 
         // APPEND STRUCTURE
         activityContent.append(line1, line2, line3);
@@ -267,13 +274,15 @@ function handleDiscordUpdate(data) {
 
         // TEXT LINES
         line1.textContent = activity.name;
-        line1.style = "font-weight: bold; color: rgba(0,160,255,0.8); font-family: var(--secondaryFont);";
+        line1.style =
+            "font-weight: bold; color: rgba(0,160,255,0.8); font-family: var(--secondaryFont);";
 
         line2.textContent = activity.details || "";
         line2.style = "opacity: 0.8; font-family: var(--secondaryFont);";
 
         line3.textContent = activity.state || "";
-        line3.style = "color: rgba(252,232,232,0.8); font-family: var(--secondaryFont);";
+        line3.style =
+            "color: rgba(252,232,232,0.8); font-family: var(--secondaryFont);";
 
         // APPEND STRUCTURE
         activityContent.append(line1, line2, line3);
@@ -287,4 +296,3 @@ function handleDiscordUpdate(data) {
         discordCard.appendChild(activityContainer);
     }
 }
-
