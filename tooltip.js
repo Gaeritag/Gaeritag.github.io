@@ -1,40 +1,51 @@
-function initTooltips() {
-    document.querySelectorAll(".tooltip-container").forEach((container) => {
-        const trigger = container.querySelector(".tooltip-trigger");
-        const bubble = container.querySelector(".tooltip-bubble");
-        if (!trigger || !bubble || trigger.dataset.tooltipInit) return;
+function initTooltip(container) {
+    const trigger = container.querySelector(".tooltip-trigger");
+    const bubble = container.querySelector(".tooltip-bubble");
+    if (!trigger || !bubble || trigger.dataset.tooltipInit) return;
 
-        trigger.dataset.tooltipInit = "true";
+    trigger.dataset.tooltipInit = "true";
 
-    const showBubble = () => bubble.classList.add("visible");
-    const hideBubble = () => bubble.classList.remove("visible");
+    let hideTimeout;
 
-        trigger.addEventListener("mouseenter", showBubble);
-        bubble.addEventListener("mouseenter", showBubble);
+    const hideBubble = () => {
+        hideTimeout = setTimeout(() => {
+            bubble.classList.remove("visible");
+        }, 100);
+    };
 
-        trigger.addEventListener("mouseleave", () => {
-            if (!bubble.matches(":hover")) hideBubble();
-        });
+    const showBubble = () => {
+        clearTimeout(hideTimeout);
+        bubble.classList.add("visible");
+    };
 
-        bubble.addEventListener("mouseleave", () => {
-            if (!trigger.matches(":hover")) hideBubble();
-        });
+    trigger.addEventListener("mouseenter", showBubble);
+    bubble.addEventListener("mouseenter", showBubble);
+
+    trigger.addEventListener("mouseleave", () => {
+        if (!bubble.matches(":hover")) hideBubble();
+    });
+
+    bubble.addEventListener("mouseleave", () => {
+        if (!trigger.matches(":hover")) hideBubble();
     });
 }
 
+// Init initial
+document.querySelectorAll(".tooltip-container").forEach(initTooltip);
+
+// Observer optimisé
 const observer = new MutationObserver((mutations) => {
     for (const mutation of mutations) {
         mutation.addedNodes.forEach((node) => {
             if (!(node instanceof HTMLElement)) return;
 
+            // Si le node EST un tooltip
             if (node.classList?.contains("tooltip-container")) {
-                initTooltips();
+                initTooltip(node);
             }
 
-            if (node.querySelectorAll) {
-                const hasTooltips = node.querySelectorAll(".tooltip-container");
-                if (hasTooltips.length > 0) initTooltips();
-            }
+            // Si le node CONTIENT des tooltips
+            node.querySelectorAll?.(".tooltip-container").forEach(initTooltip);
         });
     }
 });
