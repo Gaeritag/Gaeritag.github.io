@@ -23,10 +23,44 @@ function extractAndSanitizeUrl(input) {
 function handleDiscordUpdate(data) {
     if (!data || Object.keys(data).length === 0) return;
 
-    // --- Update profile picture ---
-    discordPfp.src = data.discord_user.avatar
-        ? `https://cdn.discordapp.com/avatars/${data.discord_user.id}/${data.discord_user.avatar}.webp`
+    const { id, avatar, avatar_decoration_data } = data.discord_user;
+
+    const discordPfp = document.querySelector(".discord-pfp");
+    const decorationImg = document.querySelector(".discord-decoration");
+
+    // ---------- AVATAR ----------
+    const isAnimatedAvatar = avatar && avatar.startsWith("a_");
+
+    const staticAvatar = avatar
+        ? `https://cdn.discordapp.com/avatars/${id}/${avatar}.png`
         : "https://cdn.discordapp.com/embed/avatars/4.png";
+
+    const gifAvatar = isAnimatedAvatar
+        ? `https://cdn.discordapp.com/avatars/${id}/${avatar}.gif`
+        : null;
+
+    discordPfp.src = staticAvatar;
+
+    if (isAnimatedAvatar) {
+        discordPfp.addEventListener("mouseenter", () => {
+            discordPfp.src = gifAvatar;
+        });
+
+        discordPfp.addEventListener("mouseleave", () => {
+            discordPfp.src = staticAvatar;
+        });
+    }
+
+    // ---------- DECORATION ----------
+    if (avatar_decoration_data?.asset) {
+        const asset = avatar_decoration_data.asset;
+
+        const decorationUrl = `https://cdn.discordapp.com/avatar-decoration-presets/${asset}`;
+
+        decorationImg.src = decorationUrl;
+    } else {
+        decorationImg.style.display = "none";
+    }
 
     // STATUS ICON
     discordStatus.src = `./assets/discord/${data.discord_status}.png`;
