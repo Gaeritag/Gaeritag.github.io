@@ -456,7 +456,7 @@ p {
     display: flex;
 }
 
-.discord-icon-container img:first-child {
+.discord-pfp {
     border: 2px solid rgba(54, 22, 22, 0.15);
     border-radius: 50%;
     height: 70px;
@@ -578,6 +578,91 @@ p {
     cursor: default;
     color: #008ada;
     filter: drop-shadow(0 0 2.5px #008ada);
+}
+
+.discord-activity-separator {
+    width: 85%;
+    color: rgba(252, 232, 232, 0.3);
+    margin: 10px;
+}
+
+.discord-activity-container {
+    flex-direction: column;
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.discord-activity-layout {
+    flex-direction: row;
+    display: flex;
+    width: 100%;
+    justify-content: left;
+    align-items: center;
+    gap: 1rem;
+    padding: 6px;
+    margin-left: 10px;
+}
+
+.discord-activity-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+}
+
+.discord-activity-image-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+}
+
+.discord-activity-large-image {
+    max-width: 70px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.discord-activity-large-image-tooltip {
+    bottom: 95%;
+}
+
+.discord-activity-small-image-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+}
+
+.discord-activity-small-image {
+    width: 24px;
+    height: 24px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.discord-activity-small-image-tooltip {
+    bottom: 110%;
+}
+
+.discord-activity-line1, .discord-activity-line2, .discord-activity-line3{
+    font-family: var(--secondaryFont);
+}
+
+.discord-activity-line1, .discord-activity-line2 {
+    font-weight: bold;
+}
+
+.discord-activity-line2 {
+    opacity: 0.8;
+}
+
+.discord-activity-line3 {
+    color: rgba(252,232,232,0.8);
 }
 
 .social-medias-container {

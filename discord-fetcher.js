@@ -1,15 +1,16 @@
-const discordContainer = document.querySelector(
-    ".discord-infos-user-container"
-);
+const discordContainer = document.querySelector(".discord-infos-user-container");
 const discordCard = document.querySelector(".discord-card");
 const discordPfp = document.querySelector(".discord-pfp");
+const decorationImg = document.querySelector(".discord-decoration");
 const discordUsername = document.getElementById("discord-username");
 const discordID = document.getElementById("discord-id");
 const discordActivity = document.getElementById("activity");
 const discordStatus = document.querySelector(".discord-icon-status");
 
+const id = "1278421106122031206";
+
 lanyard({
-    userId: "1278421106122031206",
+    userId: id,
     socket: true,
     onPresenceUpdate: handleDiscordUpdate,
 });
@@ -20,30 +21,48 @@ function extractAndSanitizeUrl(input) {
     return match ? match[0].replace("https/", "https://") : null;
 }
 
-function handleDiscordUpdate(data) {
+async function fetchDiscordData() {
+    let profileData;
+    const url = `https://dcdn.dstn.to/profile/${id}`;
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`Response status: ${response.status}`);
+        }
+        profileData = await response.json();
+    } catch (error) {
+        console.error(error.message);
+        return;
+    }
+    return profileData;
+}
+
+async function handleDiscordUpdate(data) {
     if (!data || Object.keys(data).length === 0) return;
+    const profileData = await fetchDiscordData();
 
-    const { id, avatar, avatar_decoration_data } = data.discord_user;
+    // Username and ID
+    discordUsername.textContent = profileData.user.username;
+    discordID.textContent = profileData.user.id;
 
-    const discordPfp = document.querySelector(".discord-pfp");
-    const decorationImg = document.querySelector(".discord-decoration");
+    // Status
+    discordStatus.src = `./assets/discord/${data.discord_status}.png`;
 
-    // ---------- AVATAR ----------
-    const isAnimatedAvatar = avatar && avatar.startsWith("a_");
+    // Avatar
+    const avatar = profileData.user.avatar;
 
-    const staticAvatar = avatar
-        ? `https://cdn.discordapp.com/avatars/${id}/${avatar}.png`
-        : "https://cdn.discordapp.com/embed/avatars/4.png";
+    const isAnimatedAvatar = avatar.startsWith("a_");
 
-    const gifAvatar = isAnimatedAvatar
-        ? `https://cdn.discordapp.com/avatars/${id}/${avatar}.gif`
-        : null;
+    const staticAvatar = `https://cdn.discordapp.com/avatars/${id}/${avatar}.png`;
+    const animatedAvatar = `https://cdn.discordapp.com/avatars/${id}/${avatar}.gif`;
 
-    discordPfp.src = staticAvatar;
+    discordPfp.src = isAnimatedAvatar
+        ? animatedAvatar
+        : staticAvatar;
 
     if (isAnimatedAvatar) {
         discordPfp.addEventListener("mouseenter", () => {
-            discordPfp.src = gifAvatar;
+            discordPfp.src = animatedAvatar;
         });
 
         discordPfp.addEventListener("mouseleave", () => {
@@ -51,39 +70,46 @@ function handleDiscordUpdate(data) {
         });
     }
 
-    // ---------- DECORATION ----------
-    if (avatar_decoration_data?.asset) {
-        const asset = avatar_decoration_data.asset;
-
-        const decorationUrl = `https://cdn.discordapp.com/avatar-decoration-presets/${asset}`;
-
-        decorationImg.src = decorationUrl;
+    // Decoration
+    const avatar_decoration_data = profileData.user.avatar_decoration_data;
+    const avatar_decoration_id = avatar_decoration_data?.asset;
+    if (avatar_decoration_id) {
+        decorationImg.src = `https://cdn.discordapp.com/avatar-decoration-presets/${avatar_decoration_id}`;
     } else {
         decorationImg.style.display = "none";
     }
 
-    // STATUS ICON
-    discordStatus.src = `./assets/discord/${data.discord_status}.png`;
+    // Banner
+    // const bannerImg = document.querySelector(".discord-banner-image");
+    // const banner = profileData.user_profile.banner;
+    // const isAnimatedBanner = banner?.startsWith("a_");
+    // if (banner) {
+    //     const bannerUrl = isAnimatedBanner
+    //     ? `https://cdn.discordapp.com/banners/${id}/${banner}.gif?size=1024`
+    //     : `https://cdn.discordapp.com/banners/${id}/${banner}.png?size=1024`;
+    //     bannerImg.src = bannerUrl;
+    // }
 
-    // GUILD TAG
+    // Guild tag
     const discordBadgeExisting = discordContainer.querySelector(
         ".discord-infos-user-guild-tag"
     );
 
-    if (
-        data.discord_user.primary_guild &&
-        data.discord_user.primary_guild.identity_enabled
-    ) {
+    const guild = profileData.user.primary_guild;
+    const guildId = guild?.identity_guild_id;
+    const guildBadge = guild?.badge;
+
+    if (guildId) {
         if (!discordBadgeExisting) {
             const div = document.createElement("div");
             div.className = "discord-infos-user-guild-tag";
 
             const img = document.createElement("img");
             img.alt = "Guild Tag Icon";
-            img.src = `https://cdn.discordapp.com/clan-badges/${data.discord_user.primary_guild.identity_guild_id}/${data.discord_user.primary_guild.badge}.png`;
+            img.src = `https://cdn.discordapp.com/clan-badges/${guildId}/${guildBadge}.png`;
 
             const span = document.createElement("span");
-            span.textContent = data.discord_user.primary_guild.tag;
+            span.textContent = profileData.user.primary_guild.tag;
 
             div.append(img, span);
             discordContainer.appendChild(div);
@@ -92,13 +118,9 @@ function handleDiscordUpdate(data) {
         discordBadgeExisting.remove();
     }
 
-    // USERNAME & ID
-    discordUsername.textContent = data.discord_user.username;
-    discordID.textContent = data.discord_user.id;
-    
+    // Activities
     const priority = ["Spotify", "YouTube Music"];
 
-    // ACTIVITY EXTRACTION
     const activities = data.activities || [];
 
     activities.sort((a, b) => {
@@ -127,90 +149,54 @@ function handleDiscordUpdate(data) {
         discordActivity.textContent = "Currently doing nothing";
     }
 
-    // CLEAR OLD ACTIVITY CARD
-    document.querySelectorAll('.activity-container').forEach(e => e.remove());
+    document.querySelectorAll('.discord-activity-container').forEach(e => e.remove());
 
-    // DO WE SHOW THE CARD?
     const showCard = data.listening_to_spotify || activities.length > 0;
 
     if (!showCard) {
-        return; // NO CARD DISPLAYED
+        return;
     }
 
-    // CREATE ACTIVITY CARDS
     for (const activity of activities) {
-        if (activity.type === 4) continue; // SKIP CUSTOM STATUS (ALREADY SHOWN)
+        if (activity.type === 4) continue; // Skip custom status as it's already displayed
         const activityContainer = document.createElement("div");
-        activityContainer.className = "activity-container";
-        activityContainer.style = `
-        flex-direction: column;
-        display: flex;
-        width: 100%;
-        justify-content: center;
-        align-items: center;
-        `;
+        activityContainer.className = "discord-activity-container";
 
+        // Separator
         const hr = document.createElement("hr");
-        hr.style = "width: 85%; color: rgba(252, 232, 232, 0.3); margin: 10px;";
+        hr.className = "discord-activity-separator";
 
         const activityLayout = document.createElement("div");
-        activityLayout.className = "activity-layout";
-        activityLayout.style = `
-        flex-direction: row;
-        display: flex;
-        width: 100%;
-        justify-content: left;
-        align-items: center;
-        gap: 1rem;
-        padding: 6px;
-        `;
+        activityLayout.className = "discord-activity-layout";
 
         const activityContent = document.createElement("div");
-        activityContent.className = "activity-content";
-        activityContent.style = `
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        gap: 4px;
-        `;
+        activityContent.className = "discord-activity-content";
 
         // Image containers
         const imageContainer = document.createElement("div");
-        imageContainer.className = "activity-content";
-        imageContainer.style = `
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        position: relative;
-        `;
-
-        // Large picture (main)
-        const largeContainer = document.createElement("div");
-        largeContainer.className = "large-activity-content tooltip-container";
-        largeContainer.style = `
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        position: relative;
-        `;
+        imageContainer.className = "discord-activity-image-container tooltip-container";
 
         const largeImg = document.createElement("img");
-        largeImg.className = "large-activity-image tooltip-trigger";
-        largeImg.style = "max-width: 70px; border-radius: 6px; cursor: pointer;";
+        largeImg.className = "discord-activity-large-image tooltip-trigger";
 
         const largeTooltip = document.createElement("div");
+        largeTooltip.className = "discord-activity-large-image-tooltip tooltip-bubble";
 
-        // Small picture (corner)
         const smallContainer = document.createElement("div");
         const smallImg = document.createElement("img");
         const smallTooltip = document.createElement("div");
 
+        // Text lines
         const line1 = document.createElement("span");
-        const line2 = document.createElement("span");
-        const line3 = document.createElement("span");
+        line1.className = "discord-activity-line1";
 
-        // SPOTIFY CASE
-        if (activity.name === "Spotify") {
+        const line2 = document.createElement("span");
+        line2.className = "discord-activity-line2";
+
+        const line3 = document.createElement("span");
+        line3.className = "discord-activity-line3";
+
+        if (activity.name === "Spotify") { // Spotify has a unique structure and needs to be handled separately
             largeImg.src = data.spotify.album_art_url;
             largeImg.onclick = () => {
                 window.open(
@@ -218,34 +204,16 @@ function handleDiscordUpdate(data) {
                 );
             };
             line1.textContent = "Listening to Spotify";
-            line1.style =
-                "font-weight: bold; color: rgba(0,240,30,0.8); font-family: var(--secondaryFont);";
+            line1.style = "color: rgba(0,240,30,0.8);";
 
             line2.textContent = data.spotify.song;
-            line2.style =
-                "font-weight: bold; opacity: 0.8; font-family: var(--secondaryFont);";
 
             line3.textContent = data.spotify.artist;
-            line3.style =
-                "color: rgba(252,232,232,0.8); font-family: var(--secondaryFont);";
-
-            largeTooltip.className = "large-activity-tooltip tooltip-bubble";
-            largeTooltip.style = "bottom: 95%;";
-            largeTooltip.innerHTML =
-                data.spotify.song + "<br>" + data.spotify.artist;
-
-            // APPEND STRUCTURE
-            activityContent.append(line1, line2, line3);
-            largeContainer.append(largeImg, largeTooltip);
-
-            imageContainer.append(largeContainer);
-            activityLayout.append(imageContainer, activityContent);
-            activityContainer.append(hr, activityLayout);
-
-            discordCard.appendChild(activityContainer);
+            
+            largeTooltip.innerHTML = data.spotify.song + "<br>" + data.spotify.artist;
         }
 
-        else if (activity.name === "YouTube Music") {
+        else if (activity.name === "YouTube Music") { // YouTube Music also has a unique structure
             url = activity.assets?.large_image;
             const match = url.match(/https\/(.+)/);
             if (match) url = "https://" + match[1];
@@ -257,41 +225,18 @@ function handleDiscordUpdate(data) {
             };
 
             line1.textContent = "Listening to Youtube Music";
-            line1.style =
-                "font-weight: bold; color: rgba(240, 16, 0, 0.8); font-family: var(--secondaryFont);";
+            line1.style = "color: rgba(240, 16, 0, 0.8);";
 
             line2.textContent = activity.details;
-            line2.style =
-                "font-weight: bold; opacity: 0.8; font-family: var(--secondaryFont);";
 
             line3.textContent = activity.state;
-            line3.style =
-                "color: rgba(252,232,232,0.8); font-family: var(--secondaryFont);";
 
-            largeTooltip.className = "large-activity-tooltip tooltip-bubble";
-            largeTooltip.style = "bottom: 95%;";
-            largeTooltip.innerHTML =
-                activity.details + "<br>" + activity.state;
-
-            // APPEND STRUCTURE
-            activityContent.append(line1, line2, line3);
-            largeContainer.append(largeImg, largeTooltip);
-
-            imageContainer.append(largeContainer);
-            activityLayout.append(imageContainer, activityContent);
-            activityContainer.append(hr, activityLayout);
-
-            discordCard.appendChild(activityContainer);
+            largeTooltip.innerHTML = activity.details + "<br>" + activity.state;
         }
-        // NORMAL ACTIVITY CASE
-        else {
 
-            // LARGE IMAGE
+        else { // For other activities, we follow the standard structure
             if (activity.assets?.large_image) {
                 if (activity.assets.large_text !== "") {
-                    largeTooltip.className =
-                        "large-activity-tooltip tooltip-bubble";
-                    largeTooltip.style = "bottom: 95%;";
                     largeTooltip.innerHTML = activity.assets.large_text;
                 }
 
@@ -317,31 +262,13 @@ function handleDiscordUpdate(data) {
                 }
             }
 
-            // SMALL IMAGE
+            // Small image is optional and only shown if large image is present to avoid layout issues, so we check for it inside the large image block
             if (activity.assets?.small_image) {
-                smallContainer.className =
-                    "small-activity-container tooltip-container";
-                smallContainer.style = `
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                position: absolute;
-                bottom: -2px;
-                right: -2px;
-                `;
-
-                smallImg.className = "small-activity-image tooltip-trigger";
-                smallImg.style = `
-                width: 24px;
-                height: 24px;
-                object-fit: cover;
-                border-radius: 50%;
-                `;
+                smallContainer.className = "discord-activity-small-image-container tooltip-container";
+                smallImg.className = "discord-activity-small-image tooltip-trigger";
 
                 if (activity.assets.small_text !== "") {
-                    smallTooltip.className =
-                        "small-activity-tooltip tooltip-bubble";
-                    smallTooltip.style = "bottom: 110%;";
+                    smallTooltip.className = "discord-activity-small-image-tooltip tooltip-bubble";
                     smallTooltip.innerHTML = activity.assets.small_text;
                 }
 
@@ -353,28 +280,22 @@ function handleDiscordUpdate(data) {
                     : `https://cdn.discordapp.com/app-assets/${appId}/${imgId}.webp`;
             }
 
-            // TEXT LINES
             line1.textContent = activity.name;
-            line1.style =
-                "font-weight: bold; color: rgba(0,160,255,0.8); font-family: var(--secondaryFont);";
+            line1.style = "color: rgba(0,160,255,0.8);";
 
             line2.textContent = activity.details || "";
-            line2.style = "opacity: 0.8; font-family: var(--secondaryFont);";
 
             line3.textContent = activity.state || "";
-            line3.style =
-                "color: rgba(252,232,232,0.8); font-family: var(--secondaryFont);";
 
-            // APPEND STRUCTURE
-            activityContent.append(line1, line2, line3);
-            largeContainer.append(largeImg, largeTooltip);
             smallContainer.append(smallImg, smallTooltip);
-
-            imageContainer.append(largeContainer, smallContainer);
-            activityLayout.append(imageContainer, activityContent);
-            activityContainer.append(hr, activityLayout);
-
-            discordCard.appendChild(activityContainer);
         }
+        // Append all elements in the correct order
+        activityContent.append(line1, line2, line3);
+
+        imageContainer.append(largeImg, largeTooltip, smallContainer);
+        activityLayout.append(imageContainer, activityContent);
+        activityContainer.append(hr, activityLayout);
+
+        discordCard.appendChild(activityContainer);
     }
 }
