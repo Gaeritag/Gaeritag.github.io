@@ -162,12 +162,27 @@ p {
     z-index: 10;
 }
 
+.tooltip-bubble::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 4px;
+    border-style: solid;
+    border-color: #2b2b2b transparent transparent transparent;
+}
+
 .tooltip-bubble.visible {
     background-color: hsla(0, 0%, 0%, 0.5);
     cursor: text;
     pointer-events: all;
     opacity: 1;
     transform: translateX(-50%) scale(1);
+}
+
+.tooltip-bubble.visible::after {
+    border-color: hsla(0, 0%, 0%, 0.5) transparent transparent transparent;
 }
 
 .background-video {
