@@ -349,6 +349,12 @@ p {
     display: flex;
     width: 100%;
     flex-direction: column;
+    align-items: center;
+}
+@media (min-width: 1024px) {
+    .user-details {
+        align-items: flex-start;
+    }
 }
 
 .username-container {
