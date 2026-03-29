@@ -1,4 +1,5 @@
-const discordContainer = document.querySelector(".discord-infos-user-container");
+const discordContainer = document.querySelector(".discord-container");
+const discordInfosUserContainer = document.querySelector(".discord-infos-user-container");
 const discordCard = document.querySelector(".discord-card");
 const discordPfp = document.querySelector(".discord-pfp");
 const decorationImg = document.querySelector(".discord-decoration");
@@ -90,8 +91,19 @@ async function handleDiscordUpdate(data) {
     //     bannerImg.src = bannerUrl;
     // }
 
+    // Nameplate
+    const nameplate = document.createElement("video")
+    nameplate.autoplay = true
+    nameplate.loop = true
+    nameplate.className = "discord-nameplate"
+    if (profileData.user.collectibles?.nameplate?.sku_id) {
+        nameplate.src = `https://cdn.discordapp.com/media/v1/collectibles-shop/${profileData.user.collectibles?.nameplate?.sku_id}/video`
+    }
+    if (!discordContainer.querySelector('.discord-nameplate')) {
+        discordContainer.appendChild(nameplate)
+    }
     // Guild tag
-    const discordBadgeExisting = discordContainer.querySelector(
+    const discordBadgeExisting = discordInfosUserContainer.querySelector(
         ".discord-infos-user-guild-tag"
     );
 
@@ -112,7 +124,7 @@ async function handleDiscordUpdate(data) {
             span.textContent = profileData.user.primary_guild.tag;
 
             div.append(img, span);
-            discordContainer.appendChild(div);
+            discordInfosUserContainer.appendChild(div);
         }
     } else if (discordBadgeExisting) {
         discordBadgeExisting.remove();
