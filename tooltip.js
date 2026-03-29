@@ -30,21 +30,17 @@ function initTooltip(container) {
     });
 }
 
-// Init initial
 document.querySelectorAll(".tooltip-container").forEach(initTooltip);
 
-// Observer optimisé
 const observer = new MutationObserver((mutations) => {
     for (const mutation of mutations) {
         mutation.addedNodes.forEach((node) => {
             if (!(node instanceof HTMLElement)) return;
 
-            // Si le node EST un tooltip
             if (node.classList?.contains("tooltip-container")) {
                 initTooltip(node);
             }
 
-            // Si le node CONTIENT des tooltips
             node.querySelectorAll?.(".tooltip-container").forEach(initTooltip);
         });
     }

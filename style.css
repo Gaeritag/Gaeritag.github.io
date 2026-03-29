@@ -318,10 +318,14 @@ p {
     height: 100%;
     color: transparent;
     object-fit: cover;
-    border-radius: var(--containerRadius) var(--containerRadius) 0 0;
     background-color: #374151;
     background-position: center;
     background-repeat: no-repeat;
+}
+@media (min-width: 1024px) {
+    .user-banner {
+        border-radius: var(--containerRadius) var(--containerRadius) 0 0;
+    }
 }
 
 .user-image-container {
@@ -333,7 +337,7 @@ p {
     color: transparent;
     height: 11rem;
     width: 11rem;
-    border-radius: 9999px;
+    border-radius: 50%;
     background-color: #374151;
     object-fit: cover;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
@@ -342,10 +346,14 @@ p {
 }
 
 .username-container {
-    margin-top: 1rem;
     display: flex;
     align-items: center;
     gap: 0.25rem;
+}
+@media (min-width: 1024px) {
+    .username-container {
+        margin-top: 1rem;
+    }
 }
 
 .username {
@@ -361,7 +369,8 @@ p {
 }
 
 .location-container {
-    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    padding-left: 0.25rem;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -443,13 +452,14 @@ p {
 }
 
 .discord-container {
+    position: relative;
+    left: -5%;
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
     gap: 10px;
-    width: 100%;
-    max-width: 100%;
+    max-width: 80%;
 }
 
 .discord-icon-container {
@@ -509,6 +519,7 @@ p {
     margin-right: 2px;
     margin: 0;
     max-width: 100%;
+    text-align: left;
 }
 
 .discord-infos-user-container {
@@ -622,6 +633,7 @@ p {
     flex-direction: column;
     justify-content: center;
     position: relative;
+    overflow-x: hidden;
 }
 
 .discord-activity-image-container {
@@ -661,8 +673,11 @@ p {
     bottom: 110%;
 }
 
-.discord-activity-line1, .discord-activity-line2, .discord-activity-line3{
+.discord-activity-line1, .discord-activity-line2, .discord-activity-line3 {
+    text-align: left;
     font-family: var(--secondaryFont);
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .discord-activity-line1, .discord-activity-line2 {
@@ -679,10 +694,8 @@ p {
 
 .social-medias-container {
     margin-top: 1rem;
+    margin-left: 1rem;
     width: 100%;
-}
-.social-medias-container > * + * {
-    margin-top: 1rem;
 }
 @media (min-width: 640px) {
     .social-medias-container {
