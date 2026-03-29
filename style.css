@@ -473,6 +473,7 @@ p {
     justify-content: center;
     align-items: center;
     max-width: 100%;
+    padding-right: 24px;
 }
 
 .discord-container {
@@ -484,6 +485,8 @@ p {
     align-items: center;
     gap: 10px;
     max-width: 80%;
+    padding-left: 1rem;
+    padding-right: 1rem;
 }
 
 .discord-icon-container {
